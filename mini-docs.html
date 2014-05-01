@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta content="text/html; charset=utf-8" http-equiv="Content-Type" />
+	<title>Symfony Mini-Dokumenation</title>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <link rel="stylesheet" href="http://www.w3.org/StyleSheets/Core/parser.css?family=7&amp;doc=XML" type="text/css" />
+
+    <style type="text/css">
+    	body { margin-top: 0px; font-size:16px; font-family: Georgia, Times, serif !important }
+    	a, a:visited, a:active, a:hover { color: #92BF40 !important }
+    	a#totoplink { display: block; position: fixed; left: 10px; bottom: 10px; background-color: white }
+    	h1 { margin-left: -40px; padding-left: 20px; background: rgb(192,218,143); font-size: 28px; }
+    	h1#header { margin-top: 0px; padding-top: 40px; padding-bottom: 20px; background-color: #92BF40; color: white }
+    	h2 { font-size: 22px; background: #DDDDDD; border-bottom: 2px dashed #DDDDDD; font-weight: bold; }
+    	p { text-indent: 0px; margin-bottom: 10px !important }
+    	blockquote { padding: 10px; border: 2px solid #E1E1E1 }
+    	code { font-style:normal; font-family: Consolas, Courier, monospace; color: #666666 !important}
+		pre { font-style:normal; font-family: Consolas, Courier, monospace; color: #666666; border-left: 20px #E1E1E1 solid !important; padding-left: 24px !important } 
+		li { margin-bottom: 20px; }
+
+		#topicsdiv li { margin-bottom: 0px}
+		#topicsdiv li.margined { margin-left: 60px}
+    </style>
+</head>
+<body>
+	<a id="totoplink" href="#">Nach oben</a>
+
+	<h1 id="header">Symfony 2.1 – Mini-Dokumenation</h1>
+	<p>Dieses Dokument ist eine deutsprachige Dokumentation zu <a href="http://symfony.com/">Symfony 2</a>. Es soll die wichtigsten Informationen über grundlegende und viel genutzte Konzepte möglichst leicht verständlich bereit stellen. Es ist weder umfassend noch fertig gestellt. Es soll daher vorwiegend dazu dienen, sich einen Überblick verschaffen und Wichtiges schnell nachschlagen zu können. Für weitergehende Fragen ist die ausführliche <a href="http://symfony.com/doc/current/index.html">offizielle Dokumentation</a> hinzuzuziehen. An einigen Stellen wird daher für weitere Recherche auf sie verwiesen.</p>
+	<p>Das Dokument bezieht sich auf eine Symfony Standard-Installation. Dementsprechend wird davon ausgegangen, dass YAML, Doctrine und Twig zum Einsatz kommen. Außerdem werden Beispiele gegeben, die sich auf das Demo-Projekt Acme beziehen.</p>
+	<blockquote>Stand: 06.12.2013</blockquote>
+	<div id="topicsdiv">
+		<h1 id="topics">Inhalt</h1>
+
+		<ol>
+		</ol>
+		<script type="text/javascript">
+			$(window).load(function() {
+				$("h1,h2").map(
+					function() {
+						thisid = $(this).attr("id");
+						thisname = $(this).html();
+						if ($(this).is("h2")) {
+							thislink = '<li class="margined"><a href="#' + thisid + '">' + thisname + '</a></li>';
+						} else {
+							thislink = '<li><a href="#' + thisid + '">' + thisname + '</a></li>';
+						}
+						$("#topicsdiv ol").append(thislink);
+					}
+				);
+			});
+
+		</script>
+	</div>
+	<div>
+		<h1 id="basics">Grundlagen</h1>
+
+		<h2 id="install">Die Installation</h2>
+
+		<p>Die grundlegende Installation ist äußerst simpel und schnell.</p>
+		<ol>
+			<li>Zunächst muss die aktuelle Symfony-Version <a href="http://symfony.com/download">heruntergeladen</a> werden. Hier ist wichtig, keine Version auszuwählen, bei der "without vendors" im Namen steht. Vendors werden von Symfony benötigt und müssen sonst kompliziert nachinstalliert werden.</li>
+			<li>Den heruntergeladenen und noch gepackten Ordner entpacken.</li>
+			<li>Falls <a href="http://www.apachefriends.org/de/xampp.html">XAMPP</a> verwendet wird, den Symfony-Ordner nun in den htdocs-Ordner verschieben.</li>
+			<li>Nun sollte die PHP-Datei Symfony/web/config.php aufgerufen werden, um die Konfiguration von Symfony auf Fehlerfreiheit zu überprüfen und mit einem Klick auf "Configure your Symfony Application online" abzuschließen. Dabei werden die Zugangsdaten für die Datenbankanbindug abgefragt und in der Datei app/config/parameters.yml gespeichert.</li>
+			<li>Gegebenenfalls müssen noch Rechte für die Ordner vergeben werden. In einer lokalen Umgebung wie XAMPP besteht dazu normalerweise keine Notwendigkeit.</li>
+		</ol>
+
+		<h2 id="mvc">Model-View-Controller (MVC)</h2>
+
+		<p>MVC ist ein wichtiges <a href="http://en.wikipedia.org/wiki/Software_design_pattern">Design-Pattern</a> (Entwurfsmuster). Es sieht die Trennung von Datenmodell, Darstellung und Steuerung vor. Symfony basiert auf diesem Konzept. Vereinfach gsagt werden die Daten also vorwiegend in einer Datenbank gespeichert, die Darstellung erfolgt durch Templates und die Steuerung durch PHP-Code. Wichtigstes Gebot ist dabei die Trennung möglichst strikt durchzuführen. Folgender Befehl in PHP-Code widerspräche MVC:</p>
+<pre>echo('&lt;div class="message">Der Eintrag wurde gelöscht.&lt;/div>');</pre>
+		<p>Ein Verstoß liegt vor, weil die Darstellung – hier als HTML mit einem <code>div</code> – im PHP-Code festgelegt wird. Stattdessen müsste dies über ein Template geschehen.</p>
+		<p>Siehe auch:</p>
+		<ul>
+			<li><a href="#model">Model</a></li>
+			<li><a href="#view">View</a></li>
+			<li><a href="#controller">Controller</a></li>
+		</ul>
+		<p>Ein konkretes Beispiel, wie eine einfache Blog-Website zunächst ohne Berücksichtigung von MVC und dann mit entwickelt werden kann, findet sich hier: <a href="http://symfony.com/doc/current/book/from_flat_php_to_symfony2.html#a-simple-blog-in-flat-php">Symfony-Buch</a></p>
+
+		<h2 id="bundles">Bundles</h2>
+
+		<p>Bundles sind im Grunde nichts anderes als Module: Ein Blog, ein Forum, und so weiter. Die Dateien eines Projekt-Bundles* werden in den Ordnern src/projektname/bundlename/ (PHP-Code, Views) und in web/bundles/projectnamebundlename/ (öffentliche Dateien wie Bilder und Stylesheets) gespeichert. Das ihre Dateien in zwei eigenen Ordnern abgelegt werden, können Bundles einfach weitergegeben und in andere Symfony-Projekte integriert werden.</p>
+
+		<blockquote>* = Die Bezeichnung "Projekt-Bundle" soll deutlich machen, dass diese Bundles direkt zu der Website gehören. Denn auch Symfony selber verwendet Bundles, die zum Kern-Framework gehören. Diese werden jedoch im Ordner vendor/ gespeichert.</blockquote>
+
+		<p>Bundles müssen registriert werden. Das kann manuell erfolgen oder automatisch, wenn der Assistent zur <a href="#create_bundle">Bundle-Erstellung</a> benutzt wird. Die Registrierung erfolgt in der Datei app/AppKernel.php: :</p>
+<pre>public function registerBundles()
+{
+    $bundles = array( ... ); // registriert die Standard-Bundles wie Twig und Doctrine
+    $bundles[] = new Acme\DemoBundle\AcmeDemoBundle(); // registriert ein Bundle des Projekts
+    return $bundles;
+}</pre>
+		<p>Bundles können außerdem konfiguriert werden. Das erfolgt in der <a href="#config">Config</a>-Datei des jeweiligen <a href="#environment">Environments</a>, also zum Beispiel in der Datei app/config/config.php.</p>
+		<p>Ein Bundle kann ein anderes Bundle erweitern.</p>
+
+		<h2 id="create_bundle">Bundle anlegen</h2>
+
+		<p>Es ist möglich, ein Bundle manuell anzulegen. Doch das ist zeitintensiv. Symfony bringt daher einen Assistenten mit, der die Aufgabe in Sekundenschnelle erledigt. Mit dieser Schrifft-für-Schritt-Anleitung wird ein neues Bundle für ein bestehendes Projekt angelegt. Die Pfade sind hier beispielhaft für eine Symfony-Installation unter <a href="http://www.apachefriends.org/de/xampp.html">XAMPP</a>.</p>
+		<ol>
+			<li>Konsole aufrufen via Windows-Startmenü -> Ausführen -> <code>cmd.exe</code></li>
+			<li>Befehl <code>cd C:\xampp\htdocs\Symfony</code></li>
+			<li>Befehl <code>..\..\php\php.exe app/console generate:bundle --namespace=<span style="font-style: italic">Acme/HelloBundle</span> --format=yml</code> (mit angepasstem Bundlenamen) ausführen</li>
+			<li>Es folgen mehrere Fragen. Mit Enter wird die Standardvorgabe übernommen, was normalerweise die beste Wahl ist.</li>
+			<li>Fertig, das Bundle wurde angelegt!</li>
+		</ol>
+		<p>Der Assistent erstellt die benötigten <a href="#dirs">Ordner</a>, einen Default-<a href="#controller">Controller</a>, ein Default-<a href="#template">Template</a>, er registriert das Bundle und er erstellt einen <a href="#routing">Routing</a>-Eintrag.</p>
+
+		<h2 id="annotations">Annotations</h2>
+
+		<p>Annotations – zu deutsch Anmerkungen – werden mit einer bestimmten Syntax in Kommentare über Methodendeklarationen geschrieben. Sie werden von PHP nicht nativ unterstützt, in Symfony jedoch standardmäßig. Sie dienen dazu, Konfigurationseinstellungen direkt beim – aber eben nicht direkt im – Code zu schreiben. Beispiel:</p>
+<pre>/**
+* @Route("/hello/{name}", name="_demo_hello")
+* @Template()
+*/
+public function helloAction($name)
+{
+    ...
+}</pre>
+		<p>Unter anderem können die folgenden Annotations verwendet werden:</p>
+		<dl>
+			<dt><code>@Route(...)</code></dt>
+				<dd>Siehe: <a href="#routing">Routing</a></dd>
+			<dt id="annotation_template"><code>@Template()</code></dt>
+				<dd>Die <code>Template()</code>-Annotation weist Symfony an, das Template selbstständig zu rendern. Dies muss also nicht noch etxra mit einem Befehl initiert werden. Die Controller-Methode kann dann einfach einen Array zurückgeben, der die vom Template zu benutzenden Variablen und ihre Werte enthält. Symfony ermittelt den Namen des Templates automatisch. Er muss dazu folgendem Schema entsprechen: "src/projectname/bundlename/Resources/views/controllername/actionname.html.twig". Siehe auch: <a href="#view">View</a> sowie <a href="http://symfony.com/doc/master/bundles/SensioFrameworkExtraBundle/annotations/view.html">Symfony-Dokumentation: @Template</a></dd>
+			<dt><code>@Secure($roles)</code></dt>
+				<dd>Die von der Annotation betroffene Methode kann nur aufgerufen wertden, wenn der aktuelle User die angegebene Rolle inne hat. Beispiel: <code>@Secure(roles="ROLE_ADMIN")</code></dd>
+			<dt><code>@Cache($maxage)</code></dt>
+				<dd>Gibt an, dass Caching verwendet werden soll und für wie viele Sekunden. Beispiel: <code>@Cache(maxage="86400")</code> Damit wird die Ressource für einen Tag gecached.</dd>
+		</dl>
+
+		<h2 id="logicalnames">Logische Namen</h2>
+
+		<p>Symfony kann sogenannte logische Namen verwenden. Diese stellen eine Alternative zur Angabe kompletter Pfade dar. Ihr Vorteil besteht in der kürzeren Schreibweise und darin, dass sie bis zu einem gewissen Grad unabhängig von tatsächlichen Pfaden sind. Das erlaubt es, Ordner zu verschieben.</p>
+		<p>Ein Beispiel für einen logischen Namen ist <code>AcmeDemoBundle/Controller/DemoController.php</code> beim <a href="#routing">Routing</a>. Durch den Kontext weiß Symfony, dass die gesuchte Datei in src/.../Controller/ liegen muss, weil sie ein <a href="#controller">Controller</a> ist. "AcmeDemoBundle" sagt weiterhin aus, dass die Datei im Ordner .../Acme/DemoBundle/ liegt. Zusamengesetzt ergibt sich der Dateiname "src/Acme/DemoBundle/Controller/DemoController.php".
+		<p>Damit logische Namen aufgelöst werden können, müssen Order- und Dateinamen in Symfony einer festen Konvention folgen.</p>
+		<p>In diesem Dokument wird der Platzhalter "projectbundlename" verwendet, der folgendes meint: Projektname + Bundlename. In dem Beispiel oben wäre der Projektname Acme und der Bundlename DemoBundle. Daraus ergibt sich dann "AcmeDemoBundle".</p>
+
+		<h2 id="yaml">YAML</h2>
+		<p><a href="http://www.yaml.org/">YAML</a> steht für "YAML Ain't Markup Language" und ist eine <a href="http://de.wikipedia.org/wiki/Vereinfachte_Auszeichnungssprache#Lightweight_Markup_Language">vereinfachte Auszeichnungssprache</a> für Daten. Im Gegensatz zu <a href="http://de.wikipedia.org/wiki/Xml">XML</a> ist sie für Menschen aufgrund einer im Vergleich einfacheren Syntax leichter zu lesen (und auch schneller zu schreiben). Symfony verwendet YAML standardmäßig als Format für <a href="#config">Config</a>-Dateien. Diese besitzen die Dateiendung ".yml".</p>
+		<p>YAML stellt Hierarchie durch Einrückungen im Text dar. In Symfony trifft man besonders häufig auf mit YAML beschriebene Listen (Arrays):</p>
+<pre>acme_hello_homepage:
+    pattern:  /hello/{name}/
+    defaults: { _controller: AcmeHelloBundle:Default:index }
+</pre>
+	<code>acme_hello_homepage</code> ist eine Liste in Block-Format (= ein Element pro Zeile) mit den Elementen <code>pattern</code> und <code>defaults</code>. Das Element <code>pattern</code> hat den Wert <code>/hello/{name}/</code>, während <code>defaults</code> wieder eine Liste in Inline-Format (=alle Einträge in einer Zeile) enthält: <code>{ _controller: AcmeHelloBundle:Default:index }</code>. Dieser besteht nur aus dem Element <code>_controller</code> mit dem Wert <code>AcmeHelloBundle:Default:index</code>.
+
+	</div>
+	<div>
+		<h1 id="controller">The "Controller" in MVC</h1>
+
+		<p>Ein Controller enthält gemäß <a href="#mvc">MVC</a> die Steurerung, also den PHP-Code. Bundels besitzen einen oder mehrere eigene Controller, die via <code>extends</code> die Symfony-Klasse <code>Controller</code> erweitern. Diese liegt im Verzeichnis vendor\symfony\symfony\src\Symfony\Bundle\FrameworkBundle\Controller und vererbt unter anderem folgende Methoden:</p>
+		<dl>
+			<dt id="generate_url">generateUrl($route, $parameters[], $absolute)</dt>
+				<dd>Generiert eine URL als String aus den angegebenen Parametern. Wird <code>absolute</code> auf true gesetzt, wird eine absolute URL anstatt einer relativen generiert – sie beginnt also mit "http://". Wichtig ist, dass <code>$route</code> den Namen einer tatsächlich existierenden Route angibt. Außerdem müssen die übergebenen Parameter in der Route vorgesehen sein - klar, denn sonst kann Symfony nicht wissen, wie die URL aufgebaut werden soll: Der Parameter <code>array('name'=>'Lucas')</code> kann nur dann umgewandelt werden, wenn Symfony aus dem Route-Pattern erkennen kann, wo im Pfad 'Lucas' eingesetzt werden soll – denn der Parameter-Bezeichner <code>name</code> kommt in der URL nicht mehr vor, da diese beispielsweise so aussähe: /Symfony/web/app_dev.php/demo/hello/Lucas </dd>
+			<dt>forward($controller, $path[], $query[])</dt>
+				<dd>Forwards the request to another controller.</dd>
+			<dt>redirect($url, $status)</dt>
+				<dd>Gibt einen RedirectResponse zur angegeben URL zurück. Dieser muss vom Controller zurückgegeben werden, damit er ausgeführt wird. Beispiel: <code>return $this->redirect('http://www.google.de/')</code> Damit wird die Google-Website aufgerufen.</dd>
+			<dt>renderView($view, $parameters[])</dt>
+				<dd>Gibt eine gerendertes <a href="#template">Template</a> zurück. Zum Rendern wird die Template-Engine, also standardmäßig <a href="#view">Twig</a>, genutzt. <code>$view</code> legt den Dateinamen fest. Er kann auch als logischer Name angegeben werden.</dd>
+			<dt>render($view, $parameters[], $response)</dt>
+				<dd>Rendert ein Template.</dd>
+			<dt>createForm($type, $data, $options[])</dt>
+				<dd>Creates and returns a Form instance from the type of the form.</dd>
+			<dt>getRequest()</dt>
+				<dd>Shortcut zum Zugriff auf ein <a href="#request">Request-Objekt</a></dd>
+			<dt>getUser()</dt>
+				<dd>Get a user from the Security Context.</dd>
+		</dl>
+		<p>Auf diese Methoden kann dann in den Controllern zugegriffen werden: <code>$this->getUser();</code></p>
+		<p>Controller-Klassen heißen immer Name + "Controller", also beispielweise "DemoController", und liegen in einer gleichnamigen PHP-Datei, in diesem Beispiel also "DemoController.php".</p>
+
+		<h2 id="frontcontroller">Die Front-Controller</h2>
+		<p>Front-Controller sind spezielle Controller und die Einstiegspunkte der Website. Sie behandeln einen <a href="#request">Request</a> (z.B. über GET) und geben einen <a href="response">Response</a> (z.B. HMTL) zurück (dies setzt sich dann auf der Ebene gewöhnlicher Controller fort). Ein klassischer Front-Controller wäre eine index.php, an die per Parameter die aufzurufende Subpage angehängt wird: <code>index.php?site=news</code>. Auch eine admin.php, die für den Zugang zum Admin-Bereich aufgerufen werden muss, ist ein Front-Controller. Symfony verwendet dieses Prinzip, allerdings muss der Front-Controller hier nicht index.php heißen.</p>
+		<p>Symfony liefert zwei Standard-Front-Kontroller mit, es ist aber auch einfach möglich eigene Front-Controller anzulegen. Dazu genügt es schon, die Datei einer der folgenden Controller zu kopieren, umzubennenen und den Code wie gewünscht abzuändern.</p>
+		<dl>
+			<dt>app.php</dt>
+				<dd>Front-Controller für den Produktiveinsatz der Website, lädt das <a href="#environment">Environment</a> 'prod'. Gedacht als Umgebung für die normalen User. Caching ist aktivert, aber Twig-Templates werden nicht automatisch rekompiliert, falls sie verändert wurden – der Cache-Ordner muss daher manuell geleert werden.</dd>
+			<dt>app_dev.php</dt>
+				<dd>Front-Controller für die Entwicklung des Projekts, lädt das Environment 'dev'. Zeigt in den Standardeinstellungen - die natürlich per Config-Datei geändert werden können - unten eine Toolbar mit verschiedenen Infos und Funktionen an. Bentutzt außerdem andere Caching-Einstellungen als app.php. Caching ist aktivert und Twig-Templates werden automatisch rekompiliert, falls sie verändert wurden.</dd>
+		</dl>
+
+		<h2 id="environment">Die Environments</h2>
+		<p>Ein Projekt kann in verschiedenen Environments (=Umgebungen) laufen. Die unterschiedlichen Environments teilen den gleichen Code – außer beim <a href="#frontcontroller">Front-Controller</a> – aber benutzen verschiedene <a href="#config">Konfigurationen</a>. Vordefinierte Environments sind 'prod' (optimiert für Geschwindigkeit), 'dev' (optimiert für die Entwicklung) und 'test' (gedacht für automatisierte Tests). Ein Front-Controller gibt beim Laden des App-Kernels an, welches Environment geladen werden soll: <code>$kernel = new AppKernel('dev', true);</code> Front-Controller korrespondieren daher direkt mit Environments.</p>
+		<p>Der Sinn von Environments besteht also darin, Verhaltensmerkmale der App in Abhängigkeit eines 
+			Entwicklungsszenarios festzulegen. Soll beispielsweise heißen: Wenn Debug-Ausgaben gemacht werden sollen, dann aber bitte nur während der eigentlichen Entwicklung. Dazu knüpft man die Ausgabe der Debug-Informationen an die Bedingung, dass das aktuelle Environment 'dev' ist. </p>
+		<!--<p>Es ist möglich, neue Environments zu erstellen. Hier wird nun die Klasse für den App-Kernel, app/appKernel.php, relevant.</p>-->
+	</div>
+	<div>
+		<h1 id="view">The "Viev" in MVC</h1>
+
+		<p>Symfony nutzt standardmäßig <a href="http://twig.sensiolabs.org/">Twig</a> als mächtige Template-Engine für die Darstellung gemäß <a href="#mvc">MVC</a>. Twig unterstützt dabei unter anderem komplexe Variablen, dynamische generierte Pfade und das Einbetten von Templates in andere Templates. Die Views des Projekts liegen in dem Verzeichnis src/projectname/bundlename/Resources/views/. Die Templates tragen die Dateiendung <code>.html.twig</code>. Ihr Dateiname muss unter Umständen einer bestimmten <a href="#annotation_template">Konvention</a> folgen.</p>
+
+		<h2 id="twigbasics">Twig-Basics</h2>
+		<dl>
+			<dt><code>{# ... #}</code></dt>
+				<dd>Gibt einen Kommentar an. Er kann sich über mehrere Zeilen erstecken.</dd>
+			<dt><code>{{ ... }}</code></dt>
+				<dd>Gibt eine Variable oder das Ergebnis eines Ausdrucks aus. Dient also immer einer Ausgabe.</dd>
+			<dt><code>{{ vorname ~ ' ' ~ nachname }}</code></dt>
+				<dd>Der ~-Operator entspricht dem . aus PHP oder dem + aus C#: Er führt die Konkatenation zweier Ausdrücke (hier vorname und " " und nachname) durch.</dd>
+			<dt><code>{% ... %}</code></dt>
+				<dd>Führt Befehle (=Tags im Twig-Jargon) der Programmlogik aus. Dient also immer irgend einer Art von Aktion. Beispiele: Siehe unten.</dd>
+			<dt><code>{% extends("projectbundlename::layout.html.twig") %}</code></dt>
+				<dd>Vererbung in Templates? Kein Problem für Twig mit <code>extends()</code>. Der Code des Kind-Templates wird an vorgegebener Stelle in das Eltern-Template eingefügt. Damit ist es dann möglich, ein Standard-Layout zu nutzen (hier wäre das layout.html.twig) und für dessen Unterseiten-Anzeige, Boxen und so weiter Templates einzufügen. Der <code>extends()</code>-Befehl kann auch ohne Klammern verwendet werden. Er muss der erste Befehl in dem Template sein. Doch woher weiß das Eltern-Template, wo das Kind-Template eingefügt werden soll? Dies geschieht hierdurch:</dd>
+			<dt><code>{% block blockname %} ... {% endblock %}</code><dt>
+				<dd><code>block</code> legt einen Block-Bereich mit dem Namen <code>blockname</code> fest. Dieser kann von einem Kind-Template überschrieben werden. Der Block-Bereich des Eltern-Templates kann Inhalt enthalten. Dieser wird nur dann überschrieben, wenn ein entsprechendes Kind-Template geladen wird. Das Kind-Template muss ebenfalls einen Block-Bereich mit dem gleichen Namen besitzen. Es kann sogar mehrere Block-Bereiche definieren. Keines davon muss im Eltern-Template vorhanden sein.</dd>
+			<dt><code>{% block title "Impressum" %}</code></dt>
+				<dd>Eben noch wurde <code>{% endblock %}</code> verwendet, um das Ende des Block-Bereichs festzulegen. Das ist aber nicht unedingt notwendig: Wird der Inhalt des Block in Anführungszeichen gesetzt, kann er auch wie oben geschrieben werden. Es ist sogar möglich, HTML zu verwenden: 
+				<code>{% block title "&lt;span>Impressum&lt;/span>" %}</code> Allerdings ist die Kurzschreibweise von Block eher für das Eingangsszenario mit einem hardcodierten String gedacht. In diesem Beispiel wird der Seiten-Titel (meta-Tag <code>title</code>) auf "Impressum" gesetzt, weil im Eltern-Layout der Code <code>&lt;title>{% block title %}Demo Bundle{% endblock %}&lt;/title></code> steht (mit <code>Demo Bundle</code> als Standard-Titel, falls er nicht überschrieben wird). Der Block-Inhalt kann übrigens nur einmalig festgelegt werden – der Befehl darf also nicht noch mal aufgerufen werden.
+				</dd>
+			<dt><code>{% include("projectbundlename:controllername:templatename.html.twig") %}</code></dt>
+				<dd><code>include()</code> geht den umgekehrten Weg wie <code>extends()</code>: Nun wird nicht vererbt, sondern ein Kind-Template ganz klassisch eingebunden. Das hier inkludierte Template liegt im Ordner src/projectname/bundlename/Resources/views/controllername/. Der <code>include()</code>-Befehl kann auch ohne Klammern verwendet werden.</dd>
+			<dt><code>{% render("projectbundlename:controllername:actionname" with {'name': name, 'color': 'green'}) %}</code></dt>
+				<dd><code>render()</code> bindet nicht nur bloß wie <code>include()</code> ein Template, sondern direkt einen Controller und dessen Ausgabe ein. <code>with</code> definiert außerdem zu übergebende Parameter. Damit kann man nun leicht das klassische Main-Layout / Sub-Layout-Schema umsetzen: Das Main-Layout nutzt den <code>render()</code>-Befehl, um die Subpage- und die Boxen-Templates von ihren jeweiligen Controllern laden und ausgeben zu lassen. Diese Controller müssen in ihren Action-Methoden dann ggf. selbstständig weitere Templates laden und rendern. Der <code>render()</code>-Befehl kann auch ohne Klammern verwendet werden.</dd>
+			<dt><code>{{ parent() }}</code></dt>
+				<dd>Der Befehl <code>parent()</code> fügt den Code des Blocks des Eltern-Templates ein. Er wird also innerhalb eines Block-Bereichs des Kind-Templates aufgerufen, der einen Block-Bereich des Eltern-Templates überrschreibt. Dessen Inhalt gibt  <code>parent()</code> dann aus.</dd>
+			<dt><code>{{ asset('images/logo.png') }}</code>
+				<dd>Der Befehl <code>asset($filename)</code> erzeugt aus dem angegebenen Kurzpfad den vollständigen Pfad. Der Pfad zeigt auf den via <code>$filename</code> angegeben Dateinamen: Ein Bild, ein Stylesheets, ein JavaScript oder eine Datei sonstigen Typs. Der vollständige Pfad sieht so aus: "/Symfony/web/$filename"</dd>
+			<dt id="path"><code>{{ path('_demo_hello', { 'name': 'Thomas' }) }}</code></dt>
+				<dd>Mit <code>path(routename, parameters)</code> wird eine interne URL generiert. <code>routename</code> wird als <code>name</code> in der <code>@Route()</code>-Annotation der aufzurufenden Methode angegeben. <code>parameters</code> sind die zu übergebenden GET-Parameter. Sie werden als Array (in der Twig-Notation) angegeben. Der <code>path()</code>-Befehl hat ein PHP-Pendant: <code>generateUrl()</code></dd>
+		</dl>
+		<p>Es gibt noch weitere Befehle (Tags): <a href="http://twig.sensiolabs.org/doc/tags/index.html">Twig-Dokumentation: Tags</a><br/>
+			Außerdem ist es möglich, eigene Befehele zu definieren: <a href="http://twig.sensiolabs.org/doc/advanced.html#creating-an-extension">Twig-Dokumentation: Creating Extensions</a><p>
+		<p>Für weitere Informationen: Siehe <a href="http://twig.sensiolabs.org/doc/templates.html">Twig-Dokumentation: Templates</a></p>
+	</div>
+	<div>
+		<h1 id="model">The "Model" in MVC</h1>
+
+		<p>Symfony nutzt standardmäßig <a href="http://www.doctrine-project.org/">Doctrine</a> als <a href="http://de.wikipedia.org/wiki/Object-Relational_Mapping">OR-Mapper</a>, um PHP-Objekte in einer Datenbank speichern zu können. </p>
+	</div>
+	<div>
+		<h1 id="architecture">Die Architektur</h1>
+
+		<h2 id="dirs">Die Verzeichnisstruktur</h2>
+
+		<dl>
+			<dt>app/</dt>
+				<dd>Der Symfony-Kern inkl. App-Kernel und Autoloader sowie Unterordnern für Cache und Logs</dd>
+			<dt>src/</dt>
+				<dd>Der PHP-Code der <a href="#bundles">Bundles</a> des Projekts</dd>
+			<dt>vendor/</dt>
+				<dd>In erster Linie liegen hier Third-Party-Bundles wie Twig oder Swiftmailer, aber auch Teile von Symfony</dd>
+			<dt>web/</dt>
+				<dd>Öffentliche Dateien, auf die aus dem Web zugegriffen werden darf: Bilder, Stylesheets, JavaScripts und die Controller sowie die config.php</dd>
+		</dl>
+	</div>
+	<div>
+		<h1 id="important_topics">Wichtige Themen</h1>
+
+		<h2 id="routing">Routing</h2>
+		<p>Unter Routing versteht man die Auflösung einer URL der Art <code>.../demo/hello/maxmustermann/</code> (ein sogenannter virtueller Pfad). Das Routing besteht dabei aus zwei Teilen:</p>
+		<ul>
+			<li><p><strong>Auf <a href="#config">Config</a>-Ebene:</strong> In app/config/ finden sich standardmäßig die Konfigurationsdateien, darunter auch die für das Routing: routing.yml und routing_dev.yml. In der Config-Datei des <a href="#environments">Environments</a> wird beim Bundle <code>framework</code> mit der Einstellung <code>router</code> festgelegt, welche Datei für das Routing ausgewertet werden soll. Die Routing-Dateien sind in <a href="#yaml">YAML</a> geschrieben. In ihnen wird festgelegt, welche Bundles und Controller aufgerufen werden sollen, wenn ein Pfad einem der dort definierten Pattern (=Muster) entspricht. Es ist auch möglich, eine eigene Rotuing-Datei für ein Bundle zu erstellen und diese dann zu importieren.</p>
+			<ul>
+				<li>
+					<p>Ein Routing-Eintrag kann so aussehen:</p>
+<pre>acme_news_homepage:
+    pattern:  /show/{id}/
+    defaults: { _controller: AcmeNewsBundle:Front:index }</pre>
+					<p>Dabei ist <code>acme_news_homepage</code> der Name der Route. Er wird für den Befehl <a href="#generate_url">generate_url()</a> (bzw. sein Pendant <a href="#path">path()</a>) benötigt und ist frei wählbar, muss allerdings eindeutig sein. <code>pattern</code> gibt ein Muster für einen Pfad an. <code>{id}</code> ist dabei ein Platzhalter und kann an die aufzurufende Methode als Variable übergeben werden, sofern diese einen gleichnamigen Parameter besitzt – was sie nicht tun muss. Trifft das Muster zu, kann eine Methode aufgerufen werden. Diese wird hier mit <code>_controller</code> festgelegt: <code>AcmeNewsBundle:Front:index</code> ist die Methode indexAction() im Controller FrontController im Bundle News im Projekt Acme.</p>
+				</li>
+				<li>
+					<p><code>defaults</code> definiert wie der Name schon sagt Standardwerte. <code>_controller</code> ist dabei ein fest vorgegebener Parameter. Von diesem Sepzialfall abgesehen dienen die <code>defaults</code> aber dafür, den bei <code>pattern</code> verwendeten Platzhaltern wie zum Beispiel <code>{id}</code> einen Standardwert zuzuweisen der angenommen wird, wenn der platzhalter in der URL leer bleibt:</p>
+<pre>blog:
+    pattern:   /blog/{page}
+    defaults:  { _controller: AcmeBlogBundle:Blog:index, page: 1 }</pre>
+    				<p>Das Pattern trifft auf eine URL wie /blog/1 zu, aber dank des Default_Wetes für <code>{page}</code> auch auf /blog/ – nun wird <code>{page}</code> automatisch auf 1 gesetzt!</p>
+    			</li>
+    			<li>
+    				<p>Außerdem lässt sich der Paramter <code>requirements</code> einsetzen. Er erweitert einen Routing-Eintrag um eine Bedingung. Somit könnte man beispielsweise für einen Platzhalter <code>{id}</code> nur Integer-Werte als zulässig definieren:</p>
+<pre>acme_news_homepage:
+    pattern:  /show/{id}/
+    defaults: { _controller: AcmeNewsBundle:Front:index }
+	requirements: \d+</pre>
+					<p><code>\d+</code> ist dabei ein <a href="http://de.wikipedia.org/wiki/Regulärer_Ausdruck">regulärer Ausdruck</a>. Somit ergeben sich komplexe Möglichkeiten zur Definition von Bedingungen, da die ganze Mächtigkeit regulärer Ausdrücke genutzt werden kann. In diesem Beispiel gilt <code>\d+</code> als Bedingung für alle Platzhalter,d e facto aber nur für <code>{id}</code>, da es sonst keinen Platzhalter gibt. Wäre das der Fall, könnte mit dieser Schreibweise den einzelnen Platzhaltern individuelle Bedingungen zugewiesen werden:</p>
+<pre>requirements:
+	page:	\d+
+	lang:	en|de</pre>
+				<li>
+					<p>Übrigens: Dank <code>requirements</code> können zwei Routing-Einträge das selbe Muster definieren, sofern sie unterschiedliche Bedingungen besitzen. Der zuerst stehende Routing-Eintrag wird auch zuerst abgefragt und wenn sein Muster passt, nur er verfolgt.</p>
+				</li>
+				<li>
+					<p>Für Bedingungen können einige spezielle Parameter angegeben werden. Einer davon ist <code>_method</code>. Er legt fest, welche HTTP-Methode der <a href="#request">Request</a> verwenden muss: GET oder HTTP (sowie POST, PUT und DELETE).</p>
+<pre>contact:
+    pattern:  /contact
+    defaults: { _controller: AcmeDemoBundle:Main:contact }
+    requirements:
+        _method:  GET</pre>
+				</li>
+				<li>
+					Es gibt noch weitere besondere Parameter: <a href="http://symfony.com/doc/current/book/routing.html#special-routing-parameters">Symfony-Book: Special Routing Parameters</a>
+				</li>
+				<li>
+					<p>Wie oben erwähnt, kann eine Routing-Datei auch importiert werden. Dies kann beispielsweise so aussehen:</p>
+<pre>acme_hello:
+    resource: "@AcmeHelloBundle/Resources/config/routing.yml"
+    prefix:   /</pre>
+    			</li>
+    		</ul>
+			</li>
+			<li><strong>Auf Controller-Ebene:</strong> Innerhalb eines Controllers gibt es sogenannte Action-Methoden, die Pfadaufrufe verarbeiten. Durch die Config-Datei weiß Symfony, welcher Controller aufzurufen ist. Je nach Art der Angabe weiß Symfony bereits welche Funktion aufzurufen ist. Es ist aber auch möglich, nur den Controller anzugeben, die Auswahl der Funktion aber von Annotations vor den Controller-Methoden abhängig zu machen:
+<pre>/**
+* @Route("/hello/{name}", name="_demo_hello")
+* @Template()
+*/
+public function helloAction($name) { ... }</pre>
+			<code>@Route()</code> ist die dafür zuständige Annotation. Sie legt erneut ein Pattern (hier <code>"/hello/{name}"</code>) fest. Stimmt der Pfad mit diesem überein, wird die Methode aufgerufen. Das Attribut <code>name</code> ist relevant, wenn – in Templates oder via PHP – Links generiert werden sollen: Siehe <a href="#generate_url">generate_url()</a></li>
+		</ul>
+		<p>Fazit: Das Routing kann auf zwei möglichen Ebenen stattfinden. Wenn man keine Annotations nutzt, kann auf Routing innerhalb von Controllern verzichtet werden. Anders herum ist es auch möglich, auf Config-Ebene nur einen Einstiegspunkt für das Routing zu definieren und die Details in den Annotations auf Controller-Ebene festzulegen.</p>
+		<p>Wenn Routen in Annotations verwendet werden, sollten diese nach einem einhaltlichen Schema bennant werden, das den Namen des Controllers und der Action-Methode enthält. Ansonsten wird es bei größen Projekten sehr schwer, Routen anhand ihres Namens zu finden – genau das wird aber von Interesse, wenn Routennamen zum <a href="#generate_url">Generieren von URLs</a> verwendet werden. Symfony schlägt hier folgendes Schema vor: <code>controllername_actionname</code></p>
+		<p>Weitere Informationen: <a href="http://symfony.com/doc/current/book/routing.html">Symfony-Book: Routing</a></p>
+
+		<h2 id="request">Request</h2>
+		<p>Request bedeutet übersetzt Anfrage. Ein Beispiel für einen Request wäre der Aufruf von <code>http://example.com/controller/action/</code>. Controller erhalten mit dem Befehl <code>$this->getRequest()</code> Zugriff auf den aktuellen Request. Die Methode liefert ein Request-Objekt zurück. Dieses ist von der Klasse Request, die in vendor\symfony\symfony\src\Symfony\Component\HttpFoundation\Request.php liegt. Sie bietet verschiedene Eigenschaften und Methoden an. Hier nur eine kleine Auswahl (siehe <a href="http://symfony.com/doc/current/book/http_fundamentals.html#requests-and-responses-in-symfony">Symfony-Book</a> für weitere):</p>
+		<dl>
+			<dt>getSession()<dt>
+				<dd>Gibt das aktuelle <a href="#session">Session</a>-Objekt zurück</dd>
+			<dt>$equest->get('page')<dt>
+				<dd>Gibt den Wert des <code>$_POST</code>-Parameters <code>page</code> zurück</dd>
+			<dt>getMethod()<dt>
+				<dd>Gibt die Methode an, mit der der Request erfolgt ist: GET, POST oder weniger gängig PUT, DELETE, HEAD</dd>
+			<dt>getClientIp()<dt>
+				<dd>Gibt die IP-Adresse des Clients als String zurück. In einer lokalen Umgebung wird "127.0.0.1" zurückgegeben.</dd>
+		</dl>
+		<p>Weitere Informationen: <a href="http://api.symfony.com/2.1/Symfony/Component/HttpFoundation/Request.html">Symfony-Dokumentation: Request</a></p>
+
+		<h2 id="response">Response</h2>
+		<p>Ein Response – auf deutsch Antwort – repräsentiert einen HTTP-Response und bestimmt damit den Inhalt des HTTP-Headers. Er ist von der Klasse Response, die in vendor\symfony\symfony\src\Symfony\Component\HttpFoundation\Response.php liegt. Diese wird mit <code>use Symfony\Component\HttpFoundation\Response;</code> eingebunden. Beispiel:</p>
+<pre>public function indexAction()
+{
+	return new Response('&lt;h1>Test&lt;/h1>');
+}</pre>
+		<p>Weitere Informationen: <a href="http://api.symfony.com/2.1/Symfony/Component/HttpFoundation/Response.html">Symfony-Dokumentation: Response</a></p>
+
+		<h2 id="session">Sessions</h2>
+		<p>Eine Session in Symfony repräsentiert den Client, zum Beispiel eine Person und deren Webbrowser. Die Session ist als Objekt des aktuellen <a href="#request">Request</a> verfügbar. Symfony benutzt einen Cookie, um Daten eine Persistenz (=Speicherung) zukommen zu lassen und sie über die aktuelle Session hinaus aufzubewahren:</p>
+<pre>session = $this->getRequest()->getSession(); 	// Session-Objekt erhalten
+$session->set('variable1', 'wert1'); 		// Speichert die Variable variable1 mit dem Wert wert1
+$variable1 = $session->get('variable1'); 	// Abfrage der Variable</pre>
+		<p>Das Konzept entspricht also dem aus PHP bekannten <code>$_SESSION</code>. Man muss sich jedoch im Gegensatz dazu nicht um die Session-Verwaltung, also insbesondere den Start, kümmern.</p>
+		<p>Außerdem können so Nachrichten übergeben werden:</p>
+<pre>//store a message for the very next request (in a controller)
+$session->getFlashBag()->add('notice', 'Congratulations, your action succeeded!');</pre>
+
+		<h2 id="logging">Logging</h2>
+		<p>Symfony kümmert sich standardmäßig um das automatische Logging von Fehlern. Außerdem bietet es ein Logging-Objekt an, mit dem man eigene Logeinträge erzeugen kann.</p>
+		<ul>
+			<li>Das Logging erfolgt in die Datei <code>app/logs/environmentsname.log</code>. Der Dateiname <code>environmentsname</code> wird also vom verwendeten <a href="#environment">Environment</a> bestimmt, somit wird das Logging zum Beispiel des Entwicklungs-Environments und des produktiven Environments getrennt. In diese Datei protokolliert Symfony automatisch die auftretenden Fehler.</li>
+			<li>Desweiteren kann das Logging auch explizit erfolgen. Dazu wird das Logging-Objekt verwendet. Dieses liegt als <a href="#service">Service</a> vor und wie folgt kann eine Referenz darauf erhalten werden: <code>$this->get('logger')</code> Das Logging-Objekt bietet mehrere Methode zum Protokollieren an, um sowohl Fehler als auch Warnungen, Infos oder Debug-Meldungen festhalten zu können. Im folgenden Beispiel wird eine Fehlermeldung protokolliert sowie ein Array mit zusätzlichen Infos übergeben:
+<pre>$logger = $this->get('logger');
+$logger->err('Kein Element mit der ID vorhanden.',array('id'=>$id));</pre>
+			<p>In der Log-Datei wird dann eine Zeile angehängt die so ähnlich wie diese aussehen kann:</p>
+<pre>[2012-10-19 17:08:05] app.ERROR: Kein Element mit der ID vorhanden. {"id":1337} []</pre>
+			<p>Der zweite Parameter muss ein Array sein, ist aber optinal.</p>
+			</li>
+		</ul>
+	</div>
+	<div style="height: 800px"><!-- empty --></div>
+</body>
+</html>
